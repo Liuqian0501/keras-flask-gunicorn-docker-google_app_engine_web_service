@@ -1,2 +1,5 @@
 venv/
 model.pyc
+log/
+
+*.pyc
