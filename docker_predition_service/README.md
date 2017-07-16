@@ -389,3 +389,91 @@ sudo supervisord -c supervisor.conf
 ```
 
 
+
+# step 9: docker it
+
+create `Dockerfile`
+
+```
+FROM ubuntu:latest
+
+# Update python, Install virtualenv, nginx, supervisor
+RUN apt-get update --fix-missing  \
+        && apt-get install -y build-essential git \
+        && apt-get install -y python python-dev python-setuptools \
+        && apt-get install -y python-pip python-virtualenv \
+        && apt-get install -y nginx supervisor
+
+RUN service supervisor stop \
+        && service nginx stop
+
+# create virtual env and install dependencies
+RUN virtualenv /opt/venv
+ADD ./requirements.txt /opt/venv/requirements.txt
+RUN /opt/venv/bin/pip install -r /opt/venv/requirements.txt
+
+# expose port
+EXPOSE 8080 9001
+
+RUN pip install supervisor-stdout
+
+# Add our config files
+ADD ./supervisor.conf /etc/supervisor.conf
+ADD ./nginx.conf /etc/nginx/nginx.conf
+
+# Copy our service code
+ADD ./prediction_service /opt/prediction_service
+
+# start supervisor to run our wsgi server, nginx, supervisor-stdout
+CMD supervisord -c /etc/supervisor.conf -n
+```
+## build docker image
+```
+#/bin/sh
+docker build -t prediction-service .
+```
+## Share your image
+The notation for associating a local image with a repository on a registry is username/repository:tag. The tag is optional, but recommended, since it is the mechanism that registries use to give Docker images a version. Give the repository and tag meaningful names for the context,
+
+Now, put it all together to tag the image. Run docker tag image with your username, repository, and tag names so that the image will upload to your desired destination. The syntax of the command is:
+
+```
+docker tag prediction-service gcr.io/PROJECT_ID/prediction-service
+gcloud docker -- push gcr.io/PROJECT_ID/prediction-service
+```
+
+## download shared imges and run it
+
+install docker, download imges, run docker imges
+```sh
+curl -sSL https://get.docker.com | sh
+sudo gcloud docker -- pull gcr.io/PROJECT_ID/prediction_service:latest
+sudo docker run -td -p 8080:8080 -p 9001:9001 gcr.io/PROJECT_ID/prediction-service
+```
+## manipulate running docker container
+```sh
+docker build -t friendlyname .  # Create image using this directory's Dockerfile
+docker run -p 4000:80 friendlyname  # Run "friendlyname" mapping port 4000 to 80
+docker run -d -p 4000:80 friendlyname         # Same thing, but in detached mode
+docker ps                                 # See a list of all running containers
+docker stop <hash>                     # Gracefully stop the specified container
+docker ps -a           # See a list of all containers, even the ones not running
+docker kill <hash>                   # Force shutdown of the specified container
+docker rm <hash>              # Remove the specified container from this machine
+docker rm $(docker ps -a -q)           # Remove all containers from this machine
+docker images -a                               # Show all images on this machine
+docker rmi <imagename>            # Remove the specified image from this machine
+docker rmi $(docker images -q)             # Remove all images from this machine
+docker login             # Log in this CLI session using your Docker credentials
+docker tag <image> username/repository:tag  # Tag <image> for upload to registry
+docker push username/repository:tag            # Upload tagged image to registry
+docker run username/repository:tag                   # Run image from a registry
+```
+
+
+
+
+
+
+
+
