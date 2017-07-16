@@ -1,6 +1,8 @@
-# 1. `model.py`
+# 1. Create web service
 
-## Environment
+##  `model.py`
+
+### Environment
 ```
 pip install XXX
 pip freeze > requirements.txt
@@ -17,10 +19,10 @@ Pillow==4.0.0
 
 ```
 
-## Keras applications
+### Keras applications
 Keras Applications are deep learning models that are made available alongside pre-trained weights. These models can be used for prediction, feature extraction, and fine-tuning. Weights are downloaded automatically when instantiating a model.
 
-### `InceptionV3`
+#### `InceptionV3`
 we use 
 `InceptionV3` (Inception V3 model), with weights pre-trained on ImageNet.
 
@@ -31,7 +33,7 @@ import keras
 model = keras.applications.inception_v3.InceptionV3(include_top=True, weights='imagenet', input_tensor=None, input_shape=None)`
 ```
 
-### `predict(image_file)`
+#### `predict(image_file)`
 
 
 ```python
@@ -62,9 +64,9 @@ def predict(image_file):
 
 ```
 
-# 2. `main.py`
+## `main.py`
 
-## Environment
+### Environment
 ```
 Flask==0.12
 ```
@@ -90,7 +92,7 @@ import base64
 app = Flask(__name__)
 ```
 
-## `predict()`
+### `predict()`
 
 ```python
 @app.route('/', methods=['POST'])
@@ -113,7 +115,8 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555, debug=True)
   ```
   
-connect and check
+# 2. Test
+
 First, start the server. Then make a POST request to the prediction service
 ```sh
 $ python main.py
