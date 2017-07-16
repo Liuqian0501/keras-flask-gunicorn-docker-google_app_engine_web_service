@@ -363,6 +363,12 @@ http {
 	}
 }
 ```
+## Worker Processes
+In `/etc/nginx/nginx.conf`, set `worker_processes` 1; if you have a lower traffic site where nginx, a database, and a web application all run on the same server.
+
+If you have a higher traffic site or a dedicated instance for nginx, set one worker per CPU core: worker_processes auto;
+
+
 
 ```
 $: /home/qian/prediction/venv/bin/gunicorn -w4 -b0.0.0.0:2170 main:app
