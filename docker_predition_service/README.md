@@ -316,7 +316,7 @@ edit your `nginx.conf` in `/etc/nginx`
 
 ```
 user www-data;
-worker_processes 4;
+worker_processes 1;
 pid /var/run/nginx.pid;
 daemon off;
 
@@ -390,7 +390,7 @@ sudo supervisord -c supervisor.conf
 
 
 
-# step 9: docker it
+# step 6: docker it
 
 create `Dockerfile`
 
