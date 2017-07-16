@@ -1,33 +1,31 @@
 FROM ubuntu:latest
 
-# Update python
-RUN apt-get update --fix-missing
-RUN apt-get install -y build-essential git
-RUN apt-get install -y python python-dev python-setuptools
+# Update python, Install virtualenv, nginx, supervisor
+RUN apt-get update --fix-missing  \ 
+	&& apt-get install -y build-essential git \
+	&& apt-get install -y python python-dev python-setuptools \
+	&& apt-get install -y python-pip python-virtualenv \
+	&& apt-get install -y nginx supervisor
 
-# Install virtualenv
-RUN apt-get install -y python-pip python-virtualenv
+RUN service supervisor stop \
+	&& service nginx stop
 
 # create virtual env and install dependencies
 RUN virtualenv /opt/venv
 ADD ./requirements.txt /opt/venv/requirements.txt
 RUN /opt/venv/bin/pip install -r /opt/venv/requirements.txt
 
-# Install nginx, supervisor, supervisor-stdout
-RUN apt-get install -y nginx supervisor
-RUN pip install supervisor-stdout
-RUN service supervisor stop
-RUN service nginx stop
-
 # expose port
 EXPOSE 80
 
+RUN pip install supervisor-stdout
+
 # Add our config files
-ADD ./supervisord.conf /etc/supervisord.conf
+ADD ./supervisor.conf /etc/supervisor.conf
 ADD ./nginx.conf /etc/nginx/nginx.conf
 
 # Copy our service code
 ADD ./prediction_service /opt/prediction_service
 
 # start supervisor to run our wsgi server, nginx, supervisor-stdout
-CMD supervisord -c /etc/supervisord.conf -n
+CMD supervisord -c /etc/supervisor.conf -n
