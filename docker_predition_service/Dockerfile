@@ -16,7 +16,7 @@ ADD ./requirements.txt /opt/venv/requirements.txt
 RUN /opt/venv/bin/pip install -r /opt/venv/requirements.txt
 
 # expose port
-EXPOSE 80
+EXPOSE 8080 9001
 
 RUN pip install supervisor-stdout
 
