@@ -3,3 +3,6 @@ model.pyc
 log/
 
 *.pyc
+
+lib/
+google_app_engine_web_service/appengine-gcs-client/*
