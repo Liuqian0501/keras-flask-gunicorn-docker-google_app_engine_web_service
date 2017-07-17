@@ -93,6 +93,7 @@ def fetch_recent_results():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
+    recent_results = fetch_recent_results()
     if request.method == 'POST':
         img = request.files.get('image')
 
@@ -113,8 +114,14 @@ def main():
 	content = fb.firebase_patch(get_firebase_url('results'), result)
 	logging.info('Firebase return content: %s' % content)
 
-        return render_template('view.html', image_url=img_url, predictions=predictions['predictions'])
-    return render_template('form.html')
+        #return render_template('view.html', image_url=img_url, predictions=predictions['predictions'])
+        return render_template(
+            'view.html', 
+            image_url=img_url, 
+            predictions=predictions['predictions'], 
+            recent_results=recent_results
+            )    
+    return render_template('form.html',recent_results=recent_resuls)
 
 
 @app.errorhandler(500)
