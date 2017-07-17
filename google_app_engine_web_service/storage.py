@@ -7,8 +7,11 @@ import cloudstorage as gcs
 from werkzeug import secure_filename
 from werkzeug.exceptions import BadRequest
 from google.appengine.api import app_identity
+import config
+import os
 
-bucket = app_identity.get_default_gcs_bucket_name()
+bucket = os.environ.get(config.CLOUD_STORAGE_BUCKET, app_identity.get_default_gcs_bucket_name())
+#bucket = app_identity.get_default_gcs_bucket_name()
 write_retry_params = gcs.RetryParams(backoff_factor=1.1)
 
 
