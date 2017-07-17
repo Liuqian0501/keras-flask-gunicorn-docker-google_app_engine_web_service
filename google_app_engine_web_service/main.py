@@ -16,7 +16,7 @@ import datetime
 
 app = Flask(__name__)
 app.config.from_object(config)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 def upload_image_file(stream, filename, content_type):
@@ -37,7 +37,7 @@ def upload_image_file(stream, filename, content_type):
     blobstore_filename = '/gs{}'.format(bucket_filepath)
     blob_key = blobstore.create_gs_key(blobstore_filename)
     img_url = images.get_serving_url(blob_key, secure_url=True)
-    return img_url
+    return img_url, bucket_filepath
 
 
 def fetch_predictions(img_stream):
@@ -57,6 +57,7 @@ def fetch_predictions(img_stream):
 
 def get_firebase_url(database):
     url = '%s/%s.json' % (config.FIREBASE_URL, database)
+    logging.info('jirebase url is logging.info %s', url)
     return url
 
 
@@ -98,9 +99,19 @@ def main():
         img_stream = img.read()
         filename = img.filename
         content_type = img.content_type
-        img_url = upload_image_file(img_stream, filename, content_type)
+        img_url, bucket_filepath = upload_image_file(img_stream, filename, content_type)
+        #img_url = "https://storage.googleapis.com/keraspredion.appspot.com/doggy-2017-07-17-191232.jpg"
+	#bucket_filepath = "/keraspredion.appspot.com/doggy-2017-07-17-191232.jpg"
 
         predictions = fetch_predictions(img_stream=img_stream)
+
+	logging.info('dump_result started ')
+	result = dump_result(bucket_filepath, predictions, img_url)
+	logging.info('dump_result return result: %s' % result)
+
+	logging.info('Firebase started')
+	content = fb.firebase_patch(get_firebase_url('results'), result)
+	logging.info('Firebase return content: %s' % content)
 
         return render_template('view.html', image_url=img_url, predictions=predictions['predictions'])
     return render_template('form.html')
