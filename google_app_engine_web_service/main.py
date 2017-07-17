@@ -72,4 +72,3 @@ def main():
 def server_error(e):
     logging.error('An error occurred during a request.')
     return 'An internal error occurred.', 500
-
