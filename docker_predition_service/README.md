@@ -265,13 +265,13 @@ supervisor can mamage web，**edit** folowing
 [inet_http_server]         ; inet (TCP) server disabled by default
 port=0.0.0.0:9001        ; (ip_address:port specifier, *:port for all iface)
 username=qian              ; (default is no username (open server))
-password=0501               ; (default is no password (open server))
+password=****               ; (default is no password (open server))
 
 [supervisorctl]
 serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
 serverurl=http://0.0.0.0:9001 ; use an http:// url to specify an inet socket
 username=qian              ; should be same as http_username if set
-password=0501               ; should be same as http_password if set
+password=****               ; should be same as http_password if set
 ;prompt=mysupervisor         ; cmd line prompt (default "supervisor")
 ;history_file=~/.sc_history  ; use readline history if available
 
