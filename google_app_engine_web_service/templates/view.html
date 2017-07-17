@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Image</h3>
+
+<div class="media">
+  <div class="media-left">
+    {% if image_url %}
+      <img class="book-image" src="{{image_url}}" style="max-width:50%; height:auto">
+    {% else %}
+      <img class="book-image" src="http://placekitten.com/g/128/192">
+    {% endif %}
+  </div>
+  <div>
+    {% if predictions %}
+      <ul class="list-unstyled">
+      {% for prediction in predictions %}
+        <li>{{prediction.description}} <b>{{prediction.probability}}%</b></li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <div>Unknown</div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
