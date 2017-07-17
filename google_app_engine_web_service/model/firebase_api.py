@@ -17,12 +17,15 @@ _FIREBASE_SCOPES = [
 @lru_cache()
 def _get_http():
     """Provides an authed http object."""
+    logging.info("lru_cache() called")
     http = httplib2.Http()
+   
     # Use application default credentials to make the Firebase calls
     # https://firebase.google.com/docs/reference/rest/database/user-auth
     creds = GoogleCredentials.get_application_default().create_scoped(
         _FIREBASE_SCOPES)
     creds.authorize(http)
+    logging.info("lru_cache() finished")
     return http
 
 
@@ -34,6 +37,7 @@ def firebase_put(path, value=None):
         path - the url to the Firebase object to write.
         value - a json string.
     """
+   
     response, content = _get_http().request(path, method='PUT', body=value)
     logger.info(content)
     return json.loads(content)
@@ -46,6 +50,7 @@ def firebase_patch(path, value=None):
         path - the url to the Firebase object to write.
         value - a json string.
     """
+    logging.info("patch called")
     response, content = _get_http().request(path, method='PATCH', body=value)
     logger.debug(content)
     return json.loads(content)
