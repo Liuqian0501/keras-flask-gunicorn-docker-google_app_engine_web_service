@@ -7,11 +7,15 @@ import urllib2
 import storage
 import base64
 import json
+from model import firebase_api as fb
+import pytz
+import os
+import time
+import datetime
 
 
 app = Flask(__name__)
 app.config.from_object(config)
-
 logging.basicConfig(level=logging.INFO)
 
 
@@ -51,6 +55,40 @@ def fetch_predictions(img_stream):
 
     return predictions
 
+def get_firebase_url(database):
+    url = '%s/%s.json' % (config.FIREBASE_URL, database)
+    return url
+
+
+def dump_result(bucket_filepath, predictions, image_url):
+    timestamp = time.time()
+    filename = bucket_filepath.split('/')[-1].split('.')[0]
+    # st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    result = {
+        filename: {
+            'predictions': predictions,
+            'image_url': image_url,
+            'create_timestamp': timestamp
+            }
+        }
+    return json.dumps(result)
+
+def fetch_recent_results():
+    url = '%s?orderBy="create_timestamp"&limitToLast=10&print=pretty' % get_firebase_url('results')
+    content = fb.firebase_get(url)
+    results = []
+    if not content:
+        return results
+    for key, value in content.iteritems():
+        create_date = datetime.datetime.fromtimestamp(value['create_timestamp'])
+        create_date = pytz.utc.localize(create_date)
+        value['create_date'] = create_date.astimezone(pytz.timezone('America/Chicago')).strftime("%Y-%m-%d %H:%M:%S")
+        results.append(value)
+
+    results = sorted(results, key=lambda r: r['create_timestamp'], reverse=True)
+    for result in results:
+        logging.info(result['create_date'])
+    return results
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
