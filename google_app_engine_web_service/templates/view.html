@@ -2,17 +2,16 @@
 
 {% block content %}
 
-<h3>Image</h3>
-
-<div class="media">
-  <div class="media-left">
+<div class="media alert alert-info">
+<div class="row col-md-offset-3">
+  <div class="col-md-4 col-xs-6">
     {% if image_url %}
       <img class="book-image" src="{{image_url}}" style="max-width:50%; height:auto">
     {% else %}
       <img class="book-image" src="http://placekitten.com/g/128/192">
     {% endif %}
   </div>
-  <div>
+  <div class="col-md-5 col-xs-6">
     {% if predictions %}
       <ul class="list-unstyled">
       {% for prediction in predictions %}
@@ -24,5 +23,5 @@
     {% endif %}
   </div>
 </div>
-
+</div>
 {% endblock %}
