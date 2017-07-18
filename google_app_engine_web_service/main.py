@@ -62,7 +62,7 @@ def get_firebase_url(database):
 
 
 def dump_result(bucket_filepath, predictions, image_url):
-    timestamp = time.time()
+    timestamp = int(time.time())
     filename = bucket_filepath.split('/')[-1].split('.')[0]
     # st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     result = {
@@ -75,12 +75,14 @@ def dump_result(bucket_filepath, predictions, image_url):
     return json.dumps(result)
 
 def fetch_recent_results():
-    url = '%s?orderBy="create_timestamp"&limitToLast=10&print=pretty' % get_firebase_url('results')
+    url = '%s?orderby="create_timestamp"&limittoLast=10&print=pretty' % get_firebase_url('results')
     content = fb.firebase_get(url)
     results = []
     if not content:
         return results
     for key, value in content.iteritems():
+        logging.info('key %s ', key)
+        #logging.info('time stamp  %d, float %f', int(value['create_timestamp']), value['create_timestamp'])
         create_date = datetime.datetime.fromtimestamp(value['create_timestamp'])
         create_date = pytz.utc.localize(create_date)
         value['create_date'] = create_date.astimezone(pytz.timezone('America/Chicago')).strftime("%Y-%m-%d %H:%M:%S")
@@ -121,7 +123,7 @@ def main():
             predictions=predictions['predictions'], 
             recent_results=recent_results
             )    
-    return render_template('form.html',recent_results=recent_resuls)
+    return render_template('form.html',recent_results=recent_results)
 
 
 @app.errorhandler(500)
