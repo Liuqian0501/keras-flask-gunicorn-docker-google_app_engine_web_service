@@ -86,7 +86,7 @@ def fetch_recent_results():
         value['create_date'] = create_date.astimezone(pytz.timezone('America/Chicago')).strftime("%Y-%m-%d %H:%M:%S")
         results.append(value)
 
-    results = sorted(results, key=lambda r: r['create_timestamp'], reverse=True)
+    results = sorted(results, key=lambda r: r['create_date'], reverse=True)
     for result in results:
         logging.info(result['create_date'])
     return results
