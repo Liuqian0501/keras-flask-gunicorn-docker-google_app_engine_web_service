@@ -1,3 +1,4 @@
+
 appdirs==1.4.0
 click==6.7
 Flask==0.12
@@ -8,3 +9,7 @@ packaging==16.8
 pyparsing==2.1.10
 six==1.10.0
 Werkzeug==0.11.15
+functools32==3.2.3.post2
+pytz==2017.2
+python-firebase==1.2
+oauth2client==4.1.0

@@ -1,5 +1,20 @@
 <html lang="en">
   <head>
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+
+<script>
+  // Initialize Firebase
+  // TODO: Replace with your project's customized code snippet
+  var config = {
+    apiKey: "AIzaSyBq1iG_wHcVt4zFZCoLvkkOS_52ZIJMgOc",
+    authDomain: "<keraspredion.firebaseapp.com",
+    databaseURL: "https://keraspredion.firebaseio.com",
+    storageBucket: "keraspredion.appspot.com",
+    messagingSenderId: "295103791327",
+  };
+  firebase.initializeApp(config);
+</script>
+
     <title>Keras InceptionV3 Image Recognition</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,12 +22,21 @@
   </head>
   <body>
     <div class="navbar navbar-default">
-      <div class="container">
+      <div class="container col-md-6 col-md-offset-3">
         <div class="navbar-header">
           <div class="navbar-brand">Image Classifier</div>
         </div>
         <ul class="nav navbar-nav">
-          <li><a href="/">Upload</a></li>
+          <li><a href="/">Home</a></li>
+        </ul>
+	<ul class="nav navbar-nav">
+          <li><a href="https://github.com/Liuqian0501/keras-flask-gunicorn-docker-web/">GitHub</a></li>
+        </ul>
+	<ul class="nav navbar-nav">
+          <li><a href="https://www.linkedin.com/in/qian-liu//">Linkedin</a></li>
+        </ul>
+	<ul class="nav navbar-nav">
+          <li><a>Personal website</a></li>
         </ul>
       </div>
     </div>
@@ -21,5 +45,30 @@
       {% endblock %}
     </div>
   </body>
+  <hr class="separator">
+    <div class="container">
+      {% if recent_results %}
+        {% for result in recent_results %}
+        <div class='media'> 
+          <div class='row'>
+            <div class="col-md-4 col-md-offset-3 col-xs-6">
+              <a href="#">
+                {% if result.image_url %}
+                  <img class="image-object img-responsive" src="{{result.image_url}}">
+                {% endif %}
+              </a>
+            </div>
+            <div class="col-md-5 col-xs-6">
+              {% for prediction in result.predictions.predictions %}
+                {{prediction.description}} <b>{{'%0.2f' % prediction.probability}}%</b><br/>
+              {% endfor %}
+              <h5>{{result.create_date}}</h5>
+            </div>
+          </div>   
+        </div> 
+        {% endfor %}
+      {% endif %}
+    </div>
+
 </html>
 
